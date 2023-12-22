@@ -14,7 +14,7 @@ from taxii2client.v21 import Server
 from taxii2client.common import TokenAuth
 from taxii2client.v20 import Server, as_pages
 
-logger = get_logger('unit-42-intel-feed')
+logger = get_logger('unit-42-intel-objects-feed')
 
 
 class Intelfeed(object):

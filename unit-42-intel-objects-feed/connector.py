@@ -9,7 +9,7 @@
 from .operations import operations, check_health_ext
 from connectors.core.connector import Connector, get_logger, ConnectorError
 
-logger = get_logger('unit_42_intel_feed')
+logger = get_logger('unit-42-intel-objects-feed')
 
 
 class Intelfeed(Connector):
