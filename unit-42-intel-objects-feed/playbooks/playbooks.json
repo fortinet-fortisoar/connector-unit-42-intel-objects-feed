@@ -1,0 +1,636 @@
+{
+  "type": "workflow_collections",
+  "data": [
+    {
+      "@type": "WorkflowCollection",
+      "name": "Sample - Unit 42 Intel Objects Feed - 1.0.0",
+      "description": "Sample playbooks for \"Unit 42 Intel Objects Feed\" connector. If you are planning to use any of the sample playbooks in your environment, ensure that you clone those playbooks and move them to a different collection, since the sample playbook collection gets deleted during connector upgrade and delete.",
+      "visible": true,
+      "image": null,
+      "uuid": "1bb7c74a-ef5d-4e8d-9d4f-4f298153fd64",
+      "id": 332,
+      "deletedAt": null,
+      "importedBy": [],
+      "recordTags": [],
+      "workflows": [
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "> Unit 42 Intel Object Feed > Fetch and Create",
+          "aliasName": null,
+          "tag": null,
+          "description": "Fetch and Create Indicators from Unit 42 Intel Object Feed",
+          "isActive": false,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [
+            "lastPullTime"
+          ],
+          "synchronous": false,
+          "lastModifyDate": 1703238548,
+          "collection": "/api/3/workflow_collections/1bb7c74a-ef5d-4e8d-9d4f-4f298153fd64",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/78da5baa-78d8-4fd5-bfc8-38608ad7b170",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Configuration",
+              "description": null,
+              "arguments": {
+                "tlp": "White",
+                "expiry": 90,
+                "tlp_map": "{'Red': {{'TrafficLightProtocol'| picklist('Red') }}, 'Amber': {{'TrafficLightProtocol'| picklist('Amber') }}, 'Green': {{'TrafficLightProtocol'| picklist('Green') }}, 'White': {{'TrafficLightProtocol'| picklist('White') }}}",
+                "confidence": 90,
+                "reputation": "Good",
+                "reputation_map": "{'Good': {{'IndicatorReputation'| picklist('Good') }}, 'Malicious': {{'IndicatorReputation'| picklist('Malicious') }}, 'Suspicious': {{'IndicatorReputation'| picklist('Suspicious') }}, 'TBD': {{'IndicatorReputation'| picklist('TBD') }}, 'No Reputation Available': {{'IndicatorReputation'| picklist('No Reputation Available') }}}",
+                "indicator_type_map": "{'domain-name': {{'ThreatIntelFeedType'| picklist('Domain') }}, 'domain': {{'ThreatIntelFeedType'| picklist('Domain') }}, 'file:hashes': {{'ThreatIntelFeedType'| picklist('FileHash') }}, 'MD5': {{'ThreatIntelFeedType'| picklist('FileHash-MD5') }}, 'SHA-1': {{'ThreatIntelFeedType'| picklist('FileHash-SHA1') }}, 'SHA-256': {{'ThreatIntelFeedType'| picklist('FileHash-SHA256') }}, 'ipv4-addr': {{'ThreatIntelFeedType'| picklist('IPv4 Address') }}, 'ipv6-addr': {{'ThreatIntelFeedType'| picklist('IPv6 Address') }}, 'url': {{'ThreatIntelFeedType'| picklist('URL') }}, 'windows-registry-key': {{'ThreatIntelFeedType'| picklist('Registry') }} }",
+                "threat_intel_feeds_tLP_map": "{}",
+                "threat_intel_feeds_reputation_map": "{}",
+                "threat_intel_feeds_typeOfFeed_map": "{}"
+              },
+              "status": null,
+              "top": "160",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "41cce8dd-e520-4f36-972c-e5a78932e2d4"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Create Feed List",
+              "description": null,
+              "arguments": {
+                "data": "{{vars.steps.Get_Indicators.data}}",
+                "currentPullTime": "{{arrow.get( arrow.utcnow().int_timestamp).strftime('%Y-%m-%dT%H:%M:%S.%fZ')}}"
+              },
+              "status": null,
+              "top": "620",
+              "left": "600",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "2fcb6deb-65d4-4e0d-933d-f42fcf306d45"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Create Record",
+              "description": null,
+              "arguments": {
+                "when": "{{vars.data | length > 0}}",
+                "for_each": {
+                  "item": "{{vars.data}}",
+                  "__bulk": true,
+                  "parallel": false,
+                  "condition": "{{vars.item.type=='indicator'}}",
+                  "batch_size": 100
+                },
+                "resource": {
+                  "tLP": "{% if vars.tlp %}{{ vars.tlp | resolveRange(vars.tlp_map)}}{% else %}None{% endif %}",
+                  "value": "{{vars.item.indicator_value}}",
+                  "source": "Unit 42 Intel Objects Feed",
+                  "__replace": "",
+                  "expiresOn": "{%if vars.expiry%}{{arrow.get().int_timestamp + (vars.expiry | int)*24*60*60}}{%else%}None{%endif%}",
+                  "confidence": "{% if vars.confidence %}{{ vars.confidence }}{% else %}None{% endif %}",
+                  "reputation": "{% if vars.reputation %}{{ vars.reputation | resolveRange(vars.reputation_map)}}{% else %}None{% endif %}",
+                  "sourceData": "{{vars.item | toJSON}}",
+                  "typeOfFeed": "{{vars.item.indicator_type | resolveRange(vars.indicator_type_map)}}"
+                },
+                "_showJson": false,
+                "collection": "/api/ingest-feeds/threat_intel_feeds",
+                "__recommend": [],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "720",
+              "left": "800",
+              "stepType": "/api/3/workflow_step_types/7b221880-716b-4726-a2ca-5e568d330b3e",
+              "group": null,
+              "uuid": "d247e083-f6b5-463d-886b-595a205e3a77"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Indicators",
+              "description": null,
+              "arguments": {
+                "name": "Unit 42 Intel Objects Feed",
+                "config": "ef40c026-e527-48ed-a5ca-fcf87c6fe7ab",
+                "params": {
+                  "limit": 10,
+                  "last_pull_time": "{{vars.input.params.lastPullTime}}"
+                },
+                "version": "1.0.0",
+                "connector": "unit-42-intel-objects-feed",
+                "operation": "fetch_indicators",
+                "operationTitle": "Fetch Indicators",
+                "pickFromTenant": false,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "480",
+              "left": "420",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "group": null,
+              "uuid": "9b130ba7-e9ab-407d-96c8-91f14ad7a429"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Is data only for mapping",
+              "description": null,
+              "arguments": {
+                "conditions": [
+                  {
+                    "option": "Yes, For Mapping",
+                    "step_iri": "/api/3/workflow_steps/3b1cd4cb-f223-49a4-bd46-82507a063bc9",
+                    "condition": "{{ vars.request.env_setup == true }}",
+                    "step_name": "Return Sample Data"
+                  },
+                  {
+                    "option": "No, For Ingestion",
+                    "default": true,
+                    "step_iri": "/api/3/workflow_steps/9b130ba7-e9ab-407d-96c8-91f14ad7a429",
+                    "step_name": "Get Indicators"
+                  }
+                ],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "400",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+              "group": null,
+              "uuid": "330c60e7-9dd0-457a-ad8c-d5ea43e32a32"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Resolve Range",
+              "description": null,
+              "arguments": {
+                "tlp_resolved": "{{vars.tlp | resolveRange(vars.tlp_map)}}",
+                "reputation_resolved": "{{vars.reputation | resolveRange(vars.reputation_map)}}"
+              },
+              "status": null,
+              "top": "280",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "5700f6f4-05e7-4844-a605-e64322731396"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Return Sample Data",
+              "description": null,
+              "arguments": {
+                "data": "[\n  {\n    \"id\": \"bundle--d326e4a9-ff9f-4e0c-9fa8-654afadd53c9\",\n    \"objects\": [\n      {\n        \"created\": \"2018-04-23T17:01:01.248Z\",\n        \"id\": \"indicator--5df730fb-a8b2-4528-af0b-3225e251e189\",\n        \"labels\": [\n          \"malicious-activity\"\n        ],\n        \"modified\": \"2018-04-23T17:01:01.248Z\",\n        \"name\": \"windows-updates.com\",\n        \"pattern\": \"[domain-name:value = 'windows-updates.com']\",\n        \"type\": \"indicator\",\n        \"valid_from\": \"2018-04-23T17:01:01.248Z\"\n      },\n      {\n        \"created\": \"2018-08-03T20:30:58.705Z\",\n        \"id\": \"indicator--871ce974-2e86-48a0-bc59-a03015d8ba13\",\n        \"labels\": [\n          \"malicious-activity\"\n        ],\n        \"modified\": \"2018-08-03T20:30:58.705Z\",\n        \"name\": \"iianb.99lnk.com/y8btd3lq/\",\n        \"pattern\": \"[url:value = 'iianb.99lnk.com/y8btd3lq/']\",\n        \"type\": \"indicator\",\n        \"valid_from\": \"2018-08-03T20:30:58.705Z\"\n      },\n      {\n        \"created\": \"2018-08-03T20:30:58.705Z\",\n        \"id\": \"indicator--87ee95e5-4cb7-468b-a65b-ee6c1e525dc3\",\n        \"labels\": [\n          \"malicious-activity\"\n        ],\n        \"modified\": \"2018-08-03T20:30:58.705Z\",\n        \"name\": \"bit.ly/2mkHzdP\",\n        \"pattern\": \"[url:value = 'bit.ly/2mkHzdP']\",\n        \"type\": \"indicator\",\n        \"valid_from\": \"2018-08-03T20:30:58.705Z\"\n      }\n    ],\n    \"spec_version\": \"2.0\",\n    \"type\": \"bundle\"\n  },\n  {\n    \"id\": \"bundle--1ef2830a-e49a-4abe-99b0-d9b71482e50a\",\n    \"objects\": [\n      {\n        \"created\": \"2020-02-05T14:17:46.686Z\",\n        \"created_by_ref\": \"identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5\",\n        \"description\": \"Adversaries may perform software packing or virtual machine software protection to conceal their code. Software packing is a method of compressing or encrypting an executable. Packing an executable changes the file signature in an attempt to avoid signature-based detection. Most decompression techniques decompress the executable code in memory. Virtual machine software protection translates an executable's original code into a special format that only a special virtual machine can run. A virtual machine is then called to run this code.(Citation: ESET FinFisher Jan 2018) \\n\\nUtilities used to perform software packing are called packers. Example packers are MPRESS and UPX. A more comprehensive list of known packers is available, (Citation: Wikipedia Exe Compression) but adversaries may create their own packing techniques that do not leave the same artifacts as well-known packers to evade defenses.  \",\n        \"external_references\": [\n          {\n            \"external_id\": \"T1027.002\",\n            \"source_name\": \"mitre-attack\",\n            \"url\": \"https://attack.mitre.org/techniques/T1027/002\"\n          },\n          {\n            \"external_id\": \"CAPEC-570\",\n            \"source_name\": \"capec\",\n            \"url\": \"https://capec.mitre.org/data/definitions/570.html\"\n          },\n          {\n            \"description\": \"Kafka, F. (2018, January). ESET's Guide to Deobfuscating and Devirtualizing FinFisher. Retrieved August 12, 2019.\",\n            \"source_name\": \"ESET FinFisher Jan 2018\",\n            \"url\": \"https://www.welivesecurity.com/wp-content/uploads/2018/01/WP-FinFisher.pdf\"\n          },\n          {\n            \"description\": \"Executable compression. (n.d.). Retrieved December 4, 2014.\",\n            \"source_name\": \"Wikipedia Exe Compression\",\n            \"url\": \"http://en.wikipedia.org/wiki/Executable_compression\"\n          }\n        ],\n        \"id\": \"attack-pattern--deb98323-e13f-4b0c-8d94-175379069062\",\n        \"kill_chain_phases\": [\n          {\n            \"kill_chain_name\": \"lockheed\",\n            \"phase_name\": \"installation\"\n          },\n          {\n            \"kill_chain_name\": \"mitre-attack\",\n            \"phase_name\": \"defense-evasion\"\n          }\n        ],\n        \"modified\": \"2020-02-05T20:05:41.548Z\",\n        \"name\": \"T1027.002: Software Packing\",\n        \"object_marking_refs\": [\n          \"marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168\"\n        ],\n        \"type\": \"attack-pattern\",\n        \"x_mitre_contributors\": [\n          \"Filip Kafka, ESET\"\n        ],\n        \"x_mitre_data_sources\": [\n          \"File: File Content\",\n          \"File: File Metadata\"\n        ],\n        \"x_mitre_defense_bypassed\": [\n          \"Anti-virus\",\n          \"Heuristic detection\",\n          \"Signature-based detection\"\n        ],\n        \"x_mitre_detection\": \"Use file scanning to look for known software packers or artifacts of packing techniques. Packing is not a definitive indicator of malicious activity, because legitimate software may use packing techniques to reduce binary size or to protect proprietary code.\",\n        \"x_mitre_is_subtechnique\": true,\n        \"x_mitre_platforms\": [\n          \"macOS\",\n          \"Windows\"\n        ],\n        \"x_mitre_version\": \"1.0\",\n        \"x_panw_parent_technique\": \"Obfuscated Files or Information\",\n        \"x_panw_parent_technique_subtechnique\": \"Obfuscated Files or Information: Software Packing\"\n      },\n      {\n        \"created\": \"2020-06-23T19:50:31.722Z\",\n        \"id\": \"course-of-action--ae18aab6-0a08-4c09-9a97-6c6ef58061a7\",\n        \"modified\": \"2020-06-26T13:02:55.804Z\",\n        \"name\": \"Enable DNS Security in Anti-Spyware profile\",\n        \"type\": \"course-of-action\",\n        \"x_panw_coa_u42_id\": \"x.1\",\n        \"x_panw_coa_u42_title\": \"Enable DNS Security in Anti-Spyware profile\"\n      },\n      {\n        \"created\": \"2020-06-23T19:50:31.722Z\",\n        \"id\": \"course-of-action--ae18aab6-0a08-4c09-9a97-6c6ef58061a7\",\n        \"modified\": \"2020-06-26T13:02:55.804Z\",\n        \"name\": \"Enable DNS Security in Anti-Spyware profile\",\n        \"type\": \"course-of-action\",\n        \"x_panw_coa_u42_id\": \"x.1\",\n        \"x_panw_coa_u42_title\": \"Enable DNS Security in Anti-Spyware profile\"\n      }\n    ],\n    \"spec_version\": \"2.0\",\n    \"type\": \"bundle\"\n  }\n]"
+              },
+              "status": null,
+              "top": "80",
+              "left": "420",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "3b1cd4cb-f223-49a4-bd46-82507a063bc9"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Save Result",
+              "description": null,
+              "arguments": {
+                "currentPullTime": "{{vars.currentPullTime}}"
+              },
+              "status": null,
+              "top": "820",
+              "left": "980",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "30c19201-a428-499a-9bd4-c1d518ac3243"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "__triggerLimit": true,
+                "step_variables": {
+                  "input": {
+                    "params": []
+                  },
+                  "_configuration_schema": "[\n  {\n    \"title\": \"Confidence\",\n    \"name\": \"confidence\",\n    \"type\": \"integer\",\n    \"tooltip\": \"Default Confidence score to be set for the feeds\",\n    \"required\": false,\n    \"editable\": true,\n    \"visible\": true,\n    \"value\": 90,\n    \"validation\": {\n       \"minlength\": 0,\n       \"maxlength\": 100\n    }\n  },\n  {\n    \"title\": \"Reputation\",\n    \"name\": \"reputation\",\n    \"type\": \"select\",\n    \"tooltip\": \"Default Reputation to be set for the feeds\",\n    \"required\": true,\n    \"editable\": true,\n    \"visible\": true,\n    \"options\": [\"Good\", \"Suspicious\", \"Malicious\", \"No Reputation Available\", \"TBD\"],\n    \"value\": \"Good\"\n  },\n  {\n    \"title\": \"TLP\",\n    \"name\": \"tlp\",\n    \"type\": \"select\",\n    \"tooltip\": \"Default TLP to be set for the feeds\",\n    \"required\": false,\n    \"editable\": true,\n    \"visible\": true,\n    \"options\": [\"Red\", \"Amber\", \"Green\", \"White\"],\n    \"value\": \"White\"\n  },\n  {\n    \"title\": \"Maximum Age (in days)\",\n    \"name\": \"expiry\",\n    \"type\": \"integer\",\n    \"tooltip\": \"Default age for the feeds. The indicator expires on 'valid_until' date unless a different expiry is specified here. If specified, the indicator will be marked expired on valid_from + expiry.\",\n    \"required\": false,\n    \"editable\": true,\n    \"visible\": true\n  }\n]"
+                },
+                "triggerOnSource": true,
+                "triggerOnReplicate": false
+              },
+              "status": null,
+              "top": "40",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+              "group": null,
+              "uuid": "78da5baa-78d8-4fd5-bfc8-38608ad7b170"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Configuration -> Resolve Range",
+              "targetStep": "/api/3/workflow_steps/5700f6f4-05e7-4844-a605-e64322731396",
+              "sourceStep": "/api/3/workflow_steps/41cce8dd-e520-4f36-972c-e5a78932e2d4",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "af7e6f47-925f-4efe-9812-e6f50ef4d00c"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Create Feed List -> Create Record old",
+              "targetStep": "/api/3/workflow_steps/d247e083-f6b5-463d-886b-595a205e3a77",
+              "sourceStep": "/api/3/workflow_steps/2fcb6deb-65d4-4e0d-933d-f42fcf306d45",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "dd4c2e34-a010-469e-a50e-97f904d5d5e5"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Create Record old -> Save Result",
+              "targetStep": "/api/3/workflow_steps/30c19201-a428-499a-9bd4-c1d518ac3243",
+              "sourceStep": "/api/3/workflow_steps/d247e083-f6b5-463d-886b-595a205e3a77",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "d436d0b7-7ac7-4a08-880d-077b9e23fbbc"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get Indicators -> Create Feed List",
+              "targetStep": "/api/3/workflow_steps/2fcb6deb-65d4-4e0d-933d-f42fcf306d45",
+              "sourceStep": "/api/3/workflow_steps/9b130ba7-e9ab-407d-96c8-91f14ad7a429",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "d4003f10-b08b-4ae2-ab82-7187cf3ff08d"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Is data only for mapping -> Get Indicators",
+              "targetStep": "/api/3/workflow_steps/9b130ba7-e9ab-407d-96c8-91f14ad7a429",
+              "sourceStep": "/api/3/workflow_steps/330c60e7-9dd0-457a-ad8c-d5ea43e32a32",
+              "label": "No, For Ingestion",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "ab41d60a-6716-4781-8b4d-2e2d3b972231"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Is data only for mapping -> Return Sample Data",
+              "targetStep": "/api/3/workflow_steps/3b1cd4cb-f223-49a4-bd46-82507a063bc9",
+              "sourceStep": "/api/3/workflow_steps/330c60e7-9dd0-457a-ad8c-d5ea43e32a32",
+              "label": "Yes, For Mapping",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "0bacba3e-516f-407e-bf4c-6d1fc9249b05"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Resolve Range -> Is data only for mapping",
+              "targetStep": "/api/3/workflow_steps/330c60e7-9dd0-457a-ad8c-d5ea43e32a32",
+              "sourceStep": "/api/3/workflow_steps/5700f6f4-05e7-4844-a605-e64322731396",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "a05a694a-369a-4354-8a35-00bbb44b9335"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Configuration",
+              "targetStep": "/api/3/workflow_steps/41cce8dd-e520-4f36-972c-e5a78932e2d4",
+              "sourceStep": "/api/3/workflow_steps/78da5baa-78d8-4fd5-bfc8-38608ad7b170",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "9d5b4a17-c1c5-467c-ad52-805c4a07ed85"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "uuid": "46650bf4-e947-44eb-bf92-0940c718aecf",
+          "id": 5224,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [],
+          "recordTags": [
+            "dataingestion",
+            "create",
+            "fetch",
+            "Unit42",
+            "unit-42-intel-objects-feed"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Unit 42 Intel Objects Feed > Ingest",
+          "aliasName": null,
+          "tag": null,
+          "description": "Fetch Collections from Unit 42 Intel Objects Feed",
+          "isActive": false,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "lastModifyDate": 1703237719,
+          "collection": "/api/3/workflow_collections/1bb7c74a-ef5d-4e8d-9d4f-4f298153fd64",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/1e955fd1-cabf-4753-837c-9bc03dc2738c",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Configuration",
+              "description": null,
+              "arguments": {
+                "pullTimeMacro": "Unit42IntelObjectFeedLastPullTime_{{vars['audit_info']['cyops_playbook_iri'].split('/')[-1].replace('-','_')}}"
+              },
+              "status": null,
+              "top": "100",
+              "left": "180",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "c6f0e1a6-d9ea-4bc0-a08f-f1d6f5cf6ced"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Extract Value from Response",
+              "description": null,
+              "arguments": {
+                "lastPullTime": "{% if (vars.steps.Get_Macro_Value.data[\"hydra:member\"] | length) > 0%}{{vars.steps.Get_Macro_Value.data[\"hydra:member\"][0].value }}{% else %}0{% endif %}"
+              },
+              "status": null,
+              "top": "260",
+              "left": "560",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "1b5b70b6-9f86-4714-81ff-17228422d874"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Fetch Indicators",
+              "description": null,
+              "arguments": {
+                "arguments": {
+                  "lastPullTime": "{{vars.lastPullTime}}"
+                },
+                "apply_async": false,
+                "step_variables": [],
+                "pass_parent_env": false,
+                "pass_input_record": false,
+                "workflowReference": "/api/3/workflows/46650bf4-e947-44eb-bf92-0940c718aecf"
+              },
+              "status": null,
+              "top": "360",
+              "left": "760",
+              "stepType": "/api/3/workflow_step_types/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+              "group": null,
+              "uuid": "e8be4622-2862-4042-94c1-cfcafded2476"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Macro Value",
+              "description": null,
+              "arguments": {
+                "params": {
+                  "iri": "/api/wf/api/dynamic-variable/?name={{vars.pullTimeMacro}}",
+                  "body": "",
+                  "method": "GET"
+                },
+                "version": "3.2.5",
+                "connector": "cyops_utilities",
+                "operation": "make_cyops_request",
+                "operationTitle": "FSR: Make FortiSOAR API Call",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "180",
+              "left": "380",
+              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+              "group": null,
+              "uuid": "2ff8f7a4-f3e0-4ba8-aa08-1839ebf5f567"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "__triggerLimit": true,
+                "step_variables": {
+                  "input": {
+                    "params": []
+                  }
+                },
+                "triggerOnSource": true,
+                "triggerOnReplicate": false
+              },
+              "status": null,
+              "top": "20",
+              "left": "20",
+              "stepType": "/api/3/workflow_step_types/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+              "group": null,
+              "uuid": "1e955fd1-cabf-4753-837c-9bc03dc2738c"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Update Pull Time",
+              "description": null,
+              "arguments": {
+                "params": {
+                  "macro": "{{vars.pullTimeMacro}}",
+                  "value": "{{vars.steps.Fetch_Indicators.currentPullTime}}"
+                },
+                "version": "3.2.0",
+                "connector": "cyops_utilities",
+                "operation": "updatemacro",
+                "operationTitle": "CyOPs: Update Macro",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "460",
+              "left": "960",
+              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+              "group": null,
+              "uuid": "0f84404b-a38f-4615-9ce6-2b30f691d3de"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Configuration -> Get Macro Value",
+              "targetStep": "/api/3/workflow_steps/2ff8f7a4-f3e0-4ba8-aa08-1839ebf5f567",
+              "sourceStep": "/api/3/workflow_steps/c6f0e1a6-d9ea-4bc0-a08f-f1d6f5cf6ced",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "3d828af1-2b2a-463a-9343-d2023fb989a7"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Extract Value from Response -> Fetch Indicators",
+              "targetStep": "/api/3/workflow_steps/e8be4622-2862-4042-94c1-cfcafded2476",
+              "sourceStep": "/api/3/workflow_steps/1b5b70b6-9f86-4714-81ff-17228422d874",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "a0572c75-358a-42c9-b818-1aa01b0dd0e7"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Fetch Indicators -> Update Pull Time",
+              "targetStep": "/api/3/workflow_steps/0f84404b-a38f-4615-9ce6-2b30f691d3de",
+              "sourceStep": "/api/3/workflow_steps/e8be4622-2862-4042-94c1-cfcafded2476",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "2179ced6-8b66-4c74-9daa-0ecd550a1293"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get Macro Value -> Extract Value from Response",
+              "targetStep": "/api/3/workflow_steps/1b5b70b6-9f86-4714-81ff-17228422d874",
+              "sourceStep": "/api/3/workflow_steps/2ff8f7a4-f3e0-4ba8-aa08-1839ebf5f567",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "1c987550-2636-4fd0-918a-72a805b45f7a"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Configuration",
+              "targetStep": "/api/3/workflow_steps/c6f0e1a6-d9ea-4bc0-a08f-f1d6f5cf6ced",
+              "sourceStep": "/api/3/workflow_steps/1e955fd1-cabf-4753-837c-9bc03dc2738c",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c1263eb3-efa1-463e-a088-59bdd1d0a3ea"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "uuid": "494401bb-1c45-41a3-ad89-aacfcd9cda0a",
+          "id": 5225,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [],
+          "recordTags": [
+            "dataingestion",
+            "ingest",
+            "Unit42",
+            "unit-42-intel-objects-feed"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Get Indicators",
+          "aliasName": null,
+          "tag": null,
+          "description": "Retrieve list of all indicators form Unit 42 Intel Objects feed",
+          "isActive": false,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "lastModifyDate": 1703238225,
+          "collection": "/api/3/workflow_collections/1bb7c74a-ef5d-4e8d-9d4f-4f298153fd64",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/94d7b644-bc6b-46af-bdc5-b95527dc20ee",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Indicators",
+              "description": null,
+              "arguments": {
+                "name": "Unit 42 Intel Objects Feed",
+                "config": "ef40c026-e527-48ed-a5ca-fcf87c6fe7ab",
+                "params": {
+                  "limit": 10,
+                  "last_pull_time": "2020-01-01T09:43:43.425Z"
+                },
+                "version": "1.0.0",
+                "connector": "unit-42-intel-objects-feed",
+                "operation": "fetch_indicators",
+                "operationTitle": "Fetch Indicators",
+                "pickFromTenant": false,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "180",
+              "left": "240",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "group": null,
+              "uuid": "d2df1274-5f03-4c37-9260-fa4a61aabc4c"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "route": "a2345eea-6df0-4b32-8154-f5f982640d8a",
+                "title": "AWS Feed: Get Indicators",
+                "resources": [
+                  "alerts"
+                ],
+                "inputVariables": [],
+                "step_variables": {
+                  "input": {
+                    "params": [],
+                    "records": "{{vars.input.records}}"
+                  }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": true,
+                "singleRecordExecution": false
+              },
+              "status": null,
+              "top": "40",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+              "group": null,
+              "uuid": "94d7b644-bc6b-46af-bdc5-b95527dc20ee"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Get Indicators",
+              "targetStep": "/api/3/workflow_steps/d2df1274-5f03-4c37-9260-fa4a61aabc4c",
+              "sourceStep": "/api/3/workflow_steps/94d7b644-bc6b-46af-bdc5-b95527dc20ee",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "82e4a8bd-49c7-431d-8b48-1ac64cabca7d"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "uuid": "8e22a20a-6c81-4fd8-a841-b466f58f7744",
+          "id": 5226,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [],
+          "recordTags": [
+            "Unit42",
+            "unit-42-intel-objects-feed"
+          ]
+        }
+      ]
+    }
+  ],
+  "exported_tags": [
+    "dataingestion",
+    "create",
+    "fetch",
+    "Unit42",
+    "unit-42-intel-objects-feed",
+    "ingest"
+  ]
+}
