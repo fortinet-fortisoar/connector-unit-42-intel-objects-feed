@@ -8,7 +8,7 @@
       "visible": true,
       "image": null,
       "uuid": "1bb7c74a-ef5d-4e8d-9d4f-4f298153fd64",
-      "id": 163,
+      "id": 332,
       "deletedAt": null,
       "importedBy": [],
       "recordTags": [],
@@ -21,14 +21,14 @@
           "tag": null,
           "description": "Fetch and Create Indicators from Unit 42 Intel Object Feed",
           "isActive": false,
-          "debug": true,
+          "debug": false,
           "singleRecordExecution": false,
           "remoteExecutableFlag": false,
           "parameters": [
             "lastPullTime"
           ],
           "synchronous": false,
-          "lastModifyDate": 1702466071,
+          "lastModifyDate": 1703238548,
           "collection": "/api/3/workflow_collections/1bb7c74a-ef5d-4e8d-9d4f-4f298153fd64",
           "versions": [],
           "triggerStep": "/api/3/workflow_steps/78da5baa-78d8-4fd5-bfc8-38608ad7b170",
@@ -113,24 +113,24 @@
               "description": null,
               "arguments": {
                 "name": "Unit 42 Intel Objects Feed",
-                "config": "ba7de328-312c-47e2-a7cc-c6dec0254edc",
+                "config": "ef40c026-e527-48ed-a5ca-fcf87c6fe7ab",
                 "params": {
                   "limit": 10,
                   "last_pull_time": "{{vars.input.params.lastPullTime}}"
                 },
                 "version": "1.0.0",
-                "connector": "unit_42_intel_feed",
+                "connector": "unit-42-intel-objects-feed",
                 "operation": "fetch_indicators",
                 "operationTitle": "Fetch Indicators",
                 "pickFromTenant": false,
                 "step_variables": []
               },
               "status": null,
-              "top": "520",
+              "top": "480",
               "left": "420",
               "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
               "group": null,
-              "uuid": "68d9037e-1e0c-4ff2-8a8a-cec988fd2dff"
+              "uuid": "9b130ba7-e9ab-407d-96c8-91f14ad7a429"
             },
             {
               "@type": "WorkflowStep",
@@ -147,8 +147,8 @@
                   {
                     "option": "No, For Ingestion",
                     "default": true,
-                    "step_iri": "/api/3/workflow_steps/68d9037e-1e0c-4ff2-8a8a-cec988fd2dff",
-                    "step_name": "Get Indicatorss"
+                    "step_iri": "/api/3/workflow_steps/9b130ba7-e9ab-407d-96c8-91f14ad7a429",
+                    "step_name": "Get Indicators"
                   }
                 ],
                 "step_variables": []
@@ -259,23 +259,23 @@
             },
             {
               "@type": "WorkflowRoute",
-              "name": "Get Indicatorss -> Create Feed List",
+              "name": "Get Indicators -> Create Feed List",
               "targetStep": "/api/3/workflow_steps/2fcb6deb-65d4-4e0d-933d-f42fcf306d45",
-              "sourceStep": "/api/3/workflow_steps/68d9037e-1e0c-4ff2-8a8a-cec988fd2dff",
+              "sourceStep": "/api/3/workflow_steps/9b130ba7-e9ab-407d-96c8-91f14ad7a429",
               "label": null,
               "isExecuted": false,
               "group": null,
-              "uuid": "52c59b93-aa62-4618-9737-59600a6cc87d"
+              "uuid": "d4003f10-b08b-4ae2-ab82-7187cf3ff08d"
             },
             {
               "@type": "WorkflowRoute",
-              "name": "Is data only for mapping -> Get Indicatorss",
-              "targetStep": "/api/3/workflow_steps/68d9037e-1e0c-4ff2-8a8a-cec988fd2dff",
+              "name": "Is data only for mapping -> Get Indicators",
+              "targetStep": "/api/3/workflow_steps/9b130ba7-e9ab-407d-96c8-91f14ad7a429",
               "sourceStep": "/api/3/workflow_steps/330c60e7-9dd0-457a-ad8c-d5ea43e32a32",
               "label": "No, For Ingestion",
               "isExecuted": false,
               "group": null,
-              "uuid": "c747cb4c-427f-4e0e-ba84-947fbbf85d2c"
+              "uuid": "ab41d60a-6716-4781-8b4d-2e2d3b972231"
             },
             {
               "@type": "WorkflowRoute",
@@ -311,7 +311,7 @@
           "groups": [],
           "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
           "uuid": "46650bf4-e947-44eb-bf92-0940c718aecf",
-          "id": 2041,
+          "id": 5224,
           "owners": [],
           "isPrivate": false,
           "deletedAt": null,
@@ -320,9 +320,8 @@
             "dataingestion",
             "create",
             "fetch",
-            "unit-42-intel-feed",
             "Unit42",
-            "unit_42_intel_feed"
+            "unit-42-intel-objects-feed"
           ]
         },
         {
@@ -333,12 +332,12 @@
           "tag": null,
           "description": "Fetch Collections from Unit 42 Intel Objects Feed",
           "isActive": false,
-          "debug": true,
+          "debug": false,
           "singleRecordExecution": false,
           "remoteExecutableFlag": false,
           "parameters": [],
           "synchronous": false,
-          "lastModifyDate": 1701861171,
+          "lastModifyDate": 1703237719,
           "collection": "/api/3/workflow_collections/1bb7c74a-ef5d-4e8d-9d4f-4f298153fd64",
           "versions": [],
           "triggerStep": "/api/3/workflow_steps/1e955fd1-cabf-4753-837c-9bc03dc2738c",
@@ -514,7 +513,7 @@
           "groups": [],
           "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
           "uuid": "494401bb-1c45-41a3-ad89-aacfcd9cda0a",
-          "id": 2042,
+          "id": 5225,
           "owners": [],
           "isPrivate": false,
           "deletedAt": null,
@@ -522,9 +521,8 @@
           "recordTags": [
             "dataingestion",
             "ingest",
-            "unit-42-intel-feed",
             "Unit42",
-            "unit_42_intel_feed"
+            "unit-42-intel-objects-feed"
           ]
         },
         {
@@ -535,12 +533,12 @@
           "tag": null,
           "description": "Retrieve list of all indicators form Unit 42 Intel Objects feed",
           "isActive": false,
-          "debug": true,
+          "debug": false,
           "singleRecordExecution": false,
           "remoteExecutableFlag": false,
           "parameters": [],
           "synchronous": false,
-          "lastModifyDate": 1701925161,
+          "lastModifyDate": 1703238225,
           "collection": "/api/3/workflow_collections/1bb7c74a-ef5d-4e8d-9d4f-4f298153fd64",
           "versions": [],
           "triggerStep": "/api/3/workflow_steps/94d7b644-bc6b-46af-bdc5-b95527dc20ee",
@@ -551,24 +549,24 @@
               "description": null,
               "arguments": {
                 "name": "Unit 42 Intel Objects Feed",
-                "config": "ba7de328-312c-47e2-a7cc-c6dec0254edc",
+                "config": "ef40c026-e527-48ed-a5ca-fcf87c6fe7ab",
                 "params": {
                   "limit": 10,
-                  "last_pull_time": "2023-10-09T04:59:17.834Z"
+                  "last_pull_time": "2020-01-01T09:43:43.425Z"
                 },
                 "version": "1.0.0",
-                "connector": "unit_42_intel_feed",
+                "connector": "unit-42-intel-objects-feed",
                 "operation": "fetch_indicators",
                 "operationTitle": "Fetch Indicators",
                 "pickFromTenant": false,
                 "step_variables": []
               },
               "status": null,
-              "top": "200",
+              "top": "180",
               "left": "240",
               "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
               "group": null,
-              "uuid": "80b2ac54-ad93-4893-aa97-8e72a8919035"
+              "uuid": "d2df1274-5f03-4c37-9260-fa4a61aabc4c"
             },
             {
               "@type": "WorkflowStep",
@@ -602,27 +600,26 @@
           "routes": [
             {
               "@type": "WorkflowRoute",
-              "name": "Start -> Get Indicatorss",
-              "targetStep": "/api/3/workflow_steps/80b2ac54-ad93-4893-aa97-8e72a8919035",
+              "name": "Start -> Get Indicators",
+              "targetStep": "/api/3/workflow_steps/d2df1274-5f03-4c37-9260-fa4a61aabc4c",
               "sourceStep": "/api/3/workflow_steps/94d7b644-bc6b-46af-bdc5-b95527dc20ee",
               "label": null,
               "isExecuted": false,
               "group": null,
-              "uuid": "303ee170-8db4-4f0c-9fd6-36be0c732434"
+              "uuid": "82e4a8bd-49c7-431d-8b48-1ac64cabca7d"
             }
           ],
           "groups": [],
           "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
           "uuid": "8e22a20a-6c81-4fd8-a841-b466f58f7744",
-          "id": 2043,
+          "id": 5226,
           "owners": [],
           "isPrivate": false,
           "deletedAt": null,
           "importedBy": [],
           "recordTags": [
-            "unit-42-intel-feed",
             "Unit42",
-            "unit_42_intel_feed"
+            "unit-42-intel-objects-feed"
           ]
         }
       ]
@@ -632,9 +629,8 @@
     "dataingestion",
     "create",
     "fetch",
-    "unit-42-intel-feed",
     "Unit42",
-    "unit_42_intel_feed",
+    "unit-42-intel-objects-feed",
     "ingest"
   ]
 }
