@@ -22,7 +22,7 @@
       "indicators"
     ]
   },
-  "help_online": "",
+  "help_online": "https://docs.fortinet.com/document/fortisoar/1.0.0/unit-42-intel-objects-feed/762/unit-42-intel-objects-feed-v1-0-0",
   "configuration": {
     "fields": [
       {
@@ -62,7 +62,7 @@
     {
       "operation": "fetch_indicators",
       "title": "Fetch Indicators",
-      "description": "Retrieves a list of all indicators IDs based on the modified after and limit that you have specified.",
+      "description": "Retrieves a list of indicator IDs based on the modified date and the count of records that you have specified.",
       "category": "investigation",
       "annotation": "fetch_indicators",
       "enabled": true,
@@ -125,7 +125,7 @@
           "editable": true,
           "type": "datetime",
           "tooltip": "(Optional) Specify the time the feeds were last pulled from Unit 42 Intel Feed. In this case, the data will be returned from Unit 42 Intel Feed only if the feed has been modified after the specified time.",
-          "description": "(Optional) Specify the time the feeds were last pulled from Unit 42 Intel Feed. In this case, the data will be returned from Unit 42 Intel Feed only if the feed has been modified after the specified time. "
+          "description": "(Optional) Specify the time when the feeds were last pulled from Unit 42 Intel Feed. The data is returned from Unit 42 Intel Feed only if the feed has been modified after the specified time."
         },
         {
           "title": "Limit",
@@ -136,7 +136,7 @@
           "type": "integer",
           "value": 10,
           "tooltip": "The maximum number of results to return. Should be 50 or less. Default is 10.",
-          "description": "(Optional) The maximum number of results to return. Should be 50 or less. Default is 10."
+          "description": "(Optional) Specify the maximum number of results to return. Maximum value is 50. Default value is 10."
         }
       ]
     }
