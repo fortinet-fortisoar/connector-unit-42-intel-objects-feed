@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Unit 42 Intel provides threat intelligence from multiple Palo Alto Networks services. Using Unit 42 Intel data, you can investigate indicators and their behaviors, and use that knowledge to better safeguard your network from malicious activity.<br></br> This connector has a dependency on the <a href=\"/content-hub/all-content/?contentType=solutionpack&amp;tag=ThreatIntelManagement\" target=\"_blank\" rel=\"noopener\">Threat Intel Management Solution Pack</a>. Install the Solution Pack before enabling ingestion of Threat Feeds from this source.",
   "publisher": "Fortinet",
-  "cs_approved": true,
+  "cs_approved": false,
   "cs_compatible": true,
   "category": "Threat Intelligence",
   "icon_small_name": "small.png",
