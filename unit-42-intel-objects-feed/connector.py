@@ -1,6 +1,6 @@
 """ Copyright start
     MIT License
-    Copyright (c) 2023 Fortinet Inc
+    Copyright (c) 2024 Fortinet Inc
     Copyright end """
 # -----------------------------------------
 # Unit 42 Intel Objects Feed
